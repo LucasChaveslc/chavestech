@@ -1,0 +1,15 @@
+node_modules/
+dist/
+.vite/
+*.local
+.DS_Store
+
+# Relatórios e caches de ferramentas
+coverage/
+*.tsbuildinfo
+
+# Editores
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
