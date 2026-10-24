@@ -48,7 +48,7 @@ button, a { touch-action: manipulation; -webkit-tap-highlight-color: transparent
 button { margin: 0; padding: 0; border: 0; background: transparent; color: inherit; font: inherit; cursor: pointer; }
 a { color: inherit; text-decoration: none; }
 ol { margin: 0; padding: 0; list-style: none; }
-section[id] { scroll-margin-top: 1rem; }
+section[id] { scroll-margin-top: 0; }
 
 :focus-visible {
   outline: 3px solid var(--cor-foco);
@@ -74,7 +74,7 @@ section[id] { scroll-margin-top: 1rem; }
 .cabecalho-secao { display: grid; grid-template-columns: minmax(12rem, 1fr) minmax(0, 2fr); gap: clamp(2rem, 7vw, 7rem); }
 .cabecalho-secao__rotulo { color: var(--cor-marca); font-family: var(--fonte-mono); font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; }
 .cabecalho-secao__rotulo span { color: var(--cor-texto-discreto); }
-.cabecalho-secao__texto h2 { max-width: 15ch; font-size: clamp(2.75rem, 5.5vw, 5.6rem); font-weight: 600; letter-spacing: -.065em; line-height: .94; }
+.cabecalho-secao__texto h2 { max-width: 16ch; font-size: clamp(2.75rem, 5.5vw, 5.6rem); font-weight: 600; letter-spacing: -.065em; line-height: .94; }
 .cabecalho-secao__texto > p { max-width: 42rem; margin-top: 2rem; color: var(--cor-texto-suave); font-size: clamp(1rem, 1.4vw, 1.2rem); line-height: 1.65; }
 
 .cabecalho-conceito > a:hover { color: var(--cor-marca); }

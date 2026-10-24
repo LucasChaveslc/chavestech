@@ -398,11 +398,11 @@ onBeforeUnmount(() => window.clearTimeout(temporizadorReinicio))
 
 <style scoped>
 .contato { background: #111a29; }
-.contato__grade { display: grid; grid-template-columns: minmax(18rem, .8fr) minmax(0, 1.2fr); gap: clamp(3rem, 8vw, 8rem); align-items: start; }
-.contato__editorial { position: sticky; top: 2rem; }
+.contato__grade { display: grid; grid-template-columns: minmax(28rem, 1.1fr) minmax(0, 1fr); gap: clamp(3rem, 6vw, 6rem); align-items: start; width: min(calc(100% - 2.5rem), 92rem); }
+.contato__editorial { position: sticky; top: 2rem; padding-left: 3rem; }
 .contato__editorial > p:first-child { color: var(--cor-marca); font-family: var(--fonte-mono); font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; }
 .contato__editorial > p:first-child span { color: var(--cor-texto-discreto); }
-.contato__editorial h2 { margin-top: 3rem; font-size: clamp(3rem, 5.5vw, 5.5rem); font-weight: 600; letter-spacing: -.065em; line-height: .93; }
+.contato__editorial h2 { max-width: 16ch; margin-top: 3rem; font-size: clamp(3rem, 5.5vw, 5.5rem); font-weight: 600; letter-spacing: -.065em; line-height: .93; }
 .contato__editorial > p:nth-child(3) { max-width: 34rem; margin-top: 2rem; color: var(--cor-texto-suave); line-height: 1.65; }
 .contato__nota { display: flex; gap: .8rem; max-width: 30rem; margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--cor-borda); }
 .contato__nota > span { color: #e7b35d; font-size: .6rem; }
@@ -478,7 +478,7 @@ onBeforeUnmount(() => window.clearTimeout(temporizadorReinicio))
 @keyframes tempo-novo-briefing { from { transform: scaleX(1); } to { transform: scaleX(0); } }
 @media (max-width: 900px) {
   .contato__grade { grid-template-columns: 1fr; }
-  .contato__editorial { position: static; }
+  .contato__editorial { position: static; padding-left: 0; }
 }
 @media (max-width: 560px) {
   .briefing__conteudo { min-height: 0; }
