@@ -1,6 +1,62 @@
 <!doctype html>
 <html lang="pt-BR">
   <head>
+    <!-- Google Consent Mode básico: o GTM só é carregado após consentimento opcional -->
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
+      window.__chavestechGtmCarregado = false;
+
+      window.gtag('consent', 'default', {
+        ad_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
+        analytics_storage: 'denied',
+        functionality_storage: 'granted',
+        security_storage: 'granted'
+      });
+      window.gtag('set', 'ads_data_redaction', true);
+
+      window.__carregarGtmChavestech = function () {
+        if (window.__chavestechGtmCarregado) return;
+        window.__chavestechGtmCarregado = true;
+
+        /* Google Tag Manager */
+        (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-PCJQDH7L');
+        /* End Google Tag Manager */
+      };
+
+      try {
+        var registroConsentimento = JSON.parse(
+          window.localStorage.getItem('chavestech:consentimento:v1') || 'null'
+        );
+        var registroValido = registroConsentimento
+          && registroConsentimento.versao === 1
+          && typeof registroConsentimento.analytics === 'boolean'
+          && typeof registroConsentimento.publicidade === 'boolean';
+
+        if (registroValido && (registroConsentimento.analytics || registroConsentimento.publicidade)) {
+          window.gtag('consent', 'update', {
+            analytics_storage: registroConsentimento.analytics ? 'granted' : 'denied',
+            ad_storage: registroConsentimento.publicidade ? 'granted' : 'denied',
+            ad_user_data: registroConsentimento.publicidade ? 'granted' : 'denied',
+            ad_personalization: registroConsentimento.publicidade ? 'granted' : 'denied'
+          });
+          window.dataLayer.push({
+            event: 'chavestech_consent_ready',
+            consent_analytics: registroConsentimento.analytics ? 'granted' : 'denied',
+            consent_publicidade: registroConsentimento.publicidade ? 'granted' : 'denied'
+          });
+          window.__carregarGtmChavestech();
+        }
+      } catch (_) {
+        // Sem uma preferência válida, o estado permanece negado e o GTM não é carregado.
+      }
+    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#121a28" />

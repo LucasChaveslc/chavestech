@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { computed, nextTick, ref, watch } from 'vue'
-import { fasesProjeto, opcoesObjetivo, type TipoServico } from '../../content/site'
+import { fasesProjeto, opcoesObjetivo, servicosSite, type TipoServico } from '../../content/site'
+import { enviarBriefing, ErroEnvioBriefing, type DadosBriefing } from '../../services/briefing'
+import { registrarInicioBriefing, registrarLeadGerado } from '../../services/gtm'
 
 const propriedades = defineProps<{ tipoInicial?: TipoServico | '' }>()
 
@@ -26,7 +28,17 @@ const nome = ref('')
 const email = ref('')
 const whatsapp = ref('')
 const empresa = ref('')
+const consentimentoContato = ref(false)
+const enderecoConfirmacao = ref('')
 const erro = ref('')
+const briefingIniciado = ref(false)
+const estadoEnvio = ref<'pronto' | 'enviando' | 'sucesso' | 'erro'>('pronto')
+const mensagemEnvio = ref('')
+const mensagemEnvioElemento = ref<HTMLElement | null>(null)
+const iniciadoEm = Date.now()
+const idSolicitacao = ref('')
+const assinaturaSolicitacao = ref('')
+const leadRegistrado = ref(false)
 
 const progresso = computed(() => `${etapa.value * 25}%`)
 const tipoLegivel = computed(() => tiposProjeto.find((item) => item.valor === tipo.value)?.rotulo ?? 'Não informado')
@@ -42,6 +54,103 @@ function focarTitulo() {
   nextTick(() => document.querySelector<HTMLElement>('#titulo-etapa')?.focus())
 }
 
+function registrarInicioReal() {
+  if (briefingIniciado.value) return
+
+  const tipoServico = servicosSite.find((servico) => servico.id === tipo.value)?.id
+  const registrado = registrarInicioBriefing(tipoServico)
+  if (registrado) briefingIniciado.value = true
+}
+
+function obterTipoServicoSelecionado() {
+  return servicosSite.find((servico) => servico.id === tipo.value)?.id
+}
+
+function criarIdSolicitacao() {
+  return window.crypto.randomUUID()
+}
+
+function montarDadosBriefing(): DadosBriefing {
+  const conteudo = {
+    iniciadoEm,
+    enderecoConfirmacao: enderecoConfirmacao.value,
+    tipoProjeto: tipo.value,
+    urlExistente: urlExistente.value,
+    objetivos: [...objetivos.value],
+    descricao: descricao.value,
+    tarefasSistema: tarefasSistema.value,
+    fase: fase.value,
+    prazo: prazo.value,
+    dataDesejada: dataDesejada.value,
+    nome: nome.value,
+    email: email.value,
+    whatsapp: whatsapp.value,
+    empresa: empresa.value,
+    consentimentoContato: consentimentoContato.value,
+  }
+  const assinaturaAtual = JSON.stringify(conteudo)
+
+  if (!idSolicitacao.value || assinaturaSolicitacao.value !== assinaturaAtual) {
+    idSolicitacao.value = criarIdSolicitacao()
+    assinaturaSolicitacao.value = assinaturaAtual
+  }
+
+  return { idSolicitacao: idSolicitacao.value, ...conteudo }
+}
+
+async function informarErroEnvio(mensagem: string) {
+  estadoEnvio.value = 'erro'
+  mensagemEnvio.value = mensagem
+  await nextTick()
+  mensagemEnvioElemento.value?.focus()
+}
+
+async function enviarSolicitacao() {
+  if (estadoEnvio.value === 'enviando' || estadoEnvio.value === 'sucesso') return
+
+  erro.value = ''
+  mensagemEnvio.value = ''
+
+  if (nome.value.trim().length < 2) {
+    await informarErroEnvio('Informe seu nome para enviarmos a solicitação.')
+    return
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim())) {
+    await informarErroEnvio('Informe um e-mail válido para podermos responder.')
+    return
+  }
+  if (prazo.value === 'com-data' && !dataDesejada.value) {
+    await informarErroEnvio('Informe a data desejada ou selecione “Sem data definida”.')
+    return
+  }
+  if (!consentimentoContato.value) {
+    await informarErroEnvio('Confirme a leitura da Política de Privacidade para enviar sua solicitação.')
+    return
+  }
+
+  registrarInicioReal()
+  estadoEnvio.value = 'enviando'
+
+  try {
+    await enviarBriefing(montarDadosBriefing())
+    estadoEnvio.value = 'sucesso'
+    mensagemEnvio.value = 'Solicitação enviada. Vamos responder pelo contato informado.'
+
+    if (!leadRegistrado.value) {
+      registrarLeadGerado(obterTipoServicoSelecionado())
+      leadRegistrado.value = true
+    }
+
+    await nextTick()
+    mensagemEnvioElemento.value?.focus()
+  } catch (erroEnvio) {
+    const mensagem = erroEnvio instanceof ErroEnvioBriefing
+      ? erroEnvio.message
+      : 'Não foi possível enviar agora. Suas respostas continuam aqui; tente novamente.'
+    await informarErroEnvio(mensagem)
+  }
+}
+
 function continuar() {
   erro.value = ''
   if (etapa.value === 1 && !tipo.value) erro.value = 'Escolha um tipo de projeto para continuar.'
@@ -49,6 +158,7 @@ function continuar() {
   if (etapa.value === 2 && descricao.value.trim().length < 20) erro.value = 'Conte um pouco mais da ideia: use pelo menos 20 caracteres.'
   if (etapa.value === 3 && !fase.value) erro.value = 'Escolha o momento atual do projeto.'
   if (erro.value) return
+  registrarInicioReal()
   if (etapa.value < 4) etapa.value += 1
   focarTitulo()
 }
@@ -75,11 +185,11 @@ function editar(numero: number) {
         <p>Responda algumas perguntas rápidas para começarmos uma conversa mais objetiva. Não é um orçamento automático.</p>
         <div class="contato__nota">
           <span aria-hidden="true">●</span>
-          <p><strong>Modo demonstração</strong>Suas respostas ficam apenas nesta página e não são enviadas.</p>
+          <p><strong>Envio protegido</strong>Suas respostas só são consideradas enviadas após a confirmação na tela.</p>
         </div>
       </header>
 
-      <form class="briefing" novalidate @submit.prevent>
+      <form id="briefing_orcamento" class="briefing" novalidate :aria-busy="estadoEnvio === 'enviando'" @input="registrarInicioReal" @submit.prevent="enviarSolicitacao">
         <div class="briefing__progresso">
           <span>Etapa {{ String(etapa).padStart(2, '0') }} / 04</span>
           <span>{{ etapa * 25 }}%</span>
@@ -139,7 +249,14 @@ function editar(numero: number) {
               <div><span>Objetivo</span><strong>{{ objetivos.join(', ') || 'Não informado' }}</strong><button type="button" @click="editar(2)">Editar</button></div>
               <div><span>Fase</span><strong>{{ fase || 'Não informada' }}</strong><button type="button" @click="editar(3)">Editar</button></div>
             </div>
-            <p class="briefing__aviso">O envio será habilitado quando houver um canal seguro e uma Política de Privacidade publicada.</p>
+            <label class="briefing__consentimento">
+              <input v-model="consentimentoContato" name="consentimento_contato" type="checkbox">
+              <span>Li a <a href="/politica-de-privacidade.html" target="_blank" rel="noreferrer" @click.stop>Política de Privacidade</a> e concordo com o uso dos dados para contato sobre minha solicitação.</span>
+            </label>
+            <label class="briefing__armadilha" aria-hidden="true">
+              Confirme seu endereço
+              <input v-model="enderecoConfirmacao" name="endereco_confirmacao" type="text" tabindex="-1" autocomplete="off">
+            </label>
           </fieldset>
 
           <p v-if="erro" class="briefing__erro" role="alert">{{ erro }}</p>
@@ -149,8 +266,25 @@ function editar(numero: number) {
           <button v-if="etapa > 1" type="button" class="briefing__voltar" @click="voltar">← Voltar</button>
           <span v-else />
           <button v-if="etapa < 4" type="button" class="briefing__continuar" @click="continuar">Continuar <span aria-hidden="true">→</span></button>
-          <button v-else type="button" class="briefing__continuar" disabled>Envio disponível em breve</button>
+          <button
+            v-else
+            type="submit"
+            class="briefing__continuar"
+            :disabled="estadoEnvio === 'enviando' || estadoEnvio === 'sucesso'"
+          >
+            {{ estadoEnvio === 'enviando' ? 'Enviando…' : estadoEnvio === 'sucesso' ? 'Solicitação enviada' : 'Enviar meu projeto' }}
+          </button>
         </div>
+        <p
+          v-if="mensagemEnvio"
+          ref="mensagemEnvioElemento"
+          class="briefing__status"
+          :class="`briefing__status--${estadoEnvio}`"
+          :role="estadoEnvio === 'erro' ? 'alert' : 'status'"
+          tabindex="-1"
+        >
+          {{ mensagemEnvio }}
+        </p>
       </form>
     </div>
   </section>
@@ -197,8 +331,11 @@ function editar(numero: number) {
 .briefing__resumo span { color: var(--cor-texto-discreto); font-family: var(--fonte-mono); text-transform: uppercase; }
 .briefing__resumo strong { font-weight: 500; }
 .briefing__resumo button { color: var(--cor-marca); text-decoration: underline; }
-.briefing__aviso, .briefing__erro { margin-top: 1.5rem; padding: 1rem; font-size: .78rem; line-height: 1.5; }
-.briefing__aviso { background: rgba(231,179,93,.08); color: #e8d1aa; }
+.briefing__consentimento { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: .8rem; align-items: start; margin-top: 1.5rem; padding: 1rem; border: 1px solid var(--cor-borda); color: var(--cor-texto-suave); cursor: pointer; font-size: .78rem; line-height: 1.5; }
+.briefing__consentimento input { width: 1rem; height: 1rem; margin-top: .1rem; accent-color: var(--cor-marca); }
+.briefing__consentimento a { color: var(--cor-texto); text-decoration: underline; text-underline-offset: .18em; }
+.briefing__armadilha { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+.briefing__erro { margin-top: 1.5rem; padding: 1rem; font-size: .78rem; line-height: 1.5; }
 .briefing__erro { border: 1px solid #f08c8c; color: #ffc2c2; }
 .briefing__acoes { display: flex; min-height: 5.5rem; align-items: center; justify-content: space-between; gap: 1rem; padding: 1.25rem 1.5rem; }
 .briefing__voltar { min-height: 2.75rem; padding-inline: .5rem; color: var(--cor-texto-suave); }
@@ -206,6 +343,9 @@ function editar(numero: number) {
 .briefing__continuar:not(:disabled):hover { background: #7aa2ff; }
 .briefing__voltar:hover, .briefing__resumo button:hover { color: var(--cor-texto); }
 .briefing__continuar:disabled { background: #344157; color: #9aa6ba; cursor: not-allowed; }
+.briefing__status { margin: 0; padding: 0 1.5rem 1.5rem; color: var(--cor-texto-suave); font-size: .78rem; line-height: 1.5; text-align: right; }
+.briefing__status--sucesso { color: var(--cor-sucesso); }
+.briefing__status--erro { color: #ffc2c2; }
 @media (max-width: 900px) {
   .contato__grade { grid-template-columns: 1fr; }
   .contato__editorial { position: static; }
@@ -217,5 +357,6 @@ function editar(numero: number) {
   .briefing__resumo span { grid-column: 1 / -1; }
   .briefing__acoes { align-items: stretch; }
   .briefing__continuar { max-width: 14rem; }
+  .briefing__status { text-align: left; }
 }
 </style>

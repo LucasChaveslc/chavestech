@@ -204,7 +204,7 @@ onBeforeUnmount(() => {
   transition-delay: 560ms;
 }
 .menu-lateral a:hover { color: var(--cor-texto); }
-.menu-lateral a[aria-current='location'] { background: rgba(91, 140, 255, .12); color: var(--cor-texto); }
+.menu-lateral a[aria-current='location'] { background: #192536; color: var(--cor-texto); }
 .menu-lateral__numero { display: grid; place-items: center; color: var(--cor-texto-discreto); font-variant-numeric: tabular-nums; }
 .menu-lateral a[aria-current='location'] .menu-lateral__numero { color: var(--cor-marca); }
 .menu-lateral__nome { overflow: hidden; opacity: 0; transform: translateX(-.35rem); transition: opacity 160ms ease, transform 160ms ease; }
@@ -216,16 +216,18 @@ onBeforeUnmount(() => {
   min-height: 2.75rem;
   grid-template-columns: 1fr !important;
   place-items: center;
-  background: var(--cor-marca);
-  color: #07101f !important;
+  background: transparent;
+  color: var(--cor-texto) !important;
   opacity: 0;
   transform: scale(.65);
-  transition: opacity 180ms ease, transform 300ms cubic-bezier(.22, 1, .36, 1);
+  transition: background-color 180ms ease, opacity 180ms ease, transform 300ms cubic-bezier(.22, 1, .36, 1);
 }
 .menu-lateral .menu-lateral__marca[aria-current='location'] {
-  background: var(--cor-marca);
-  color: #07101f;
+  background: transparent;
+  color: var(--cor-texto);
 }
+.menu-lateral .menu-lateral__marca:hover,
+.menu-lateral .menu-lateral__marca:focus-visible { background: #192536; }
 .menu-lateral--visivel .menu-lateral__marca { opacity: 1; transform: scale(1); }
 .menu-lateral__simbolo { width: 1.65rem; }
 

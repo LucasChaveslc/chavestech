@@ -1,6 +1,12 @@
 {
   "version": 1,
   "skills": {
+    "LGPD Check": {
+      "source": "lgpd-app/skills",
+      "sourceType": "github",
+      "skillPath": "skills/lgpd-check/SKILL.md",
+      "computedHash": "bac4c169d9b5681b4c40e5f1aa867f0b6bc23704fa12e76951ce707aaad121a3"
+    },
     "banner-design": {
       "source": "nextlevelbuilder/ui-ux-pro-max-skill",
       "sourceType": "github",
@@ -30,6 +36,12 @@
       "sourceType": "github",
       "skillPath": "skills/frontend-design/SKILL.md",
       "computedHash": "89496d5dd00f4810205f351759594fc2742bf8eea85a2f2b2d1de59f4bd91576"
+    },
+    "lgpd-md": {
+      "source": "lgpd-app/skills",
+      "sourceType": "github",
+      "skillPath": "skills/lgpd-md/SKILL.md",
+      "computedHash": "e28565c8d3ed8342150e17b491a7ab5954e0983690e3755b19c2ec52d003b4c1"
     },
     "slides": {
       "source": "nextlevelbuilder/ui-ux-pro-max-skill",

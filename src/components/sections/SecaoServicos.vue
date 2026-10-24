@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { servicosSite, type TipoServico } from '../../content/site'
+import { registrarCliqueCta } from '../../services/gtm'
 import CabecalhoSecao from '../base/CabecalhoSecao.vue'
 import IconeServico from '../base/IconeServico.vue'
 
@@ -8,6 +9,11 @@ const emitir = defineEmits<{
 }>()
 
 function selecionarServico(tipo: TipoServico) {
+  registrarCliqueCta({
+    localizacao: 'servicos',
+    identificador: `servicos_${tipo}`,
+    tipoServico: tipo,
+  })
   emitir('selecionar', tipo)
 }
 </script>

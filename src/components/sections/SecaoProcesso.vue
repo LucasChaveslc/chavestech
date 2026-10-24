@@ -1,6 +1,14 @@
 <script setup lang="ts">
 import { etapasProcesso } from '../../content/site'
+import { registrarCliqueCta } from '../../services/gtm'
 import CabecalhoSecao from '../base/CabecalhoSecao.vue'
+
+function registrarCtaProcesso() {
+  registrarCliqueCta({
+    localizacao: 'processo',
+    identificador: 'processo_comecar_projeto',
+  })
+}
 </script>
 
 <template>
@@ -25,7 +33,7 @@ import CabecalhoSecao from '../base/CabecalhoSecao.vue'
         </li>
       </ol>
 
-      <a class="processo__cta" href="#contato">Quero começar meu projeto <span aria-hidden="true">→</span></a>
+      <a class="processo__cta" href="#contato" @click="registrarCtaProcesso">Quero começar meu projeto <span aria-hidden="true">→</span></a>
     </div>
   </section>
 </template>

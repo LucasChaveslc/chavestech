@@ -85,6 +85,11 @@ function irParaServicos() {
 function controlarRoda(evento: WheelEvent) {
   if (!efeitoHabilitado()) return
 
+  if (document.documentElement.dataset.introducaoMarca === 'ativa') {
+    evento.preventDefault()
+    return
+  }
+
   if (!controleAtivo && window.scrollY <= 2) transicaoConsumida = false
 
   if (controleAtivo) {

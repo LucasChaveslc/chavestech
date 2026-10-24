@@ -47,6 +47,7 @@ function desacelerarRolagem(evento: WheelEvent) {
   if (
     !rolagemEditorialHabilitada()
     || evento.defaultPrevented
+    || document.documentElement.dataset.introducaoMarca === 'ativa'
     || evento.ctrlKey
     || evento.metaKey
     || evento.shiftKey

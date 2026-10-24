@@ -1,6 +1,17 @@
+<script setup lang="ts">
+import { registrarCliqueCta } from '../../services/gtm'
+
+function registrarCtaHero() {
+  registrarCliqueCta({
+    localizacao: 'hero',
+    identificador: 'hero_conversar_projeto',
+  })
+}
+</script>
+
 <template>
   <div class="botoes-hero">
-    <a class="botao-hero botao-hero--primario" href="#contato">
+    <a class="botao-hero botao-hero--primario" href="#contato" @click="registrarCtaHero">
       Vamos conversar sobre seu projeto
       <svg aria-hidden="true" viewBox="0 0 20 20">
         <path d="M4 10h11M11 5l5 5-5 5" />

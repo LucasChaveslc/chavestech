@@ -9,6 +9,8 @@ import SecaoDiferenciais from './components/sections/SecaoDiferenciais.vue'
 import SecaoSobre from './components/sections/SecaoSobre.vue'
 import SecaoContato from './components/sections/SecaoContato.vue'
 import RodapeSite from './components/layout/RodapeSite.vue'
+import GerenciadorConsentimento from './components/layout/GerenciadorConsentimento.vue'
+import IntroducaoMarca from './components/layout/IntroducaoMarca.vue'
 import MenuLateral from './components/layout/MenuLateral.vue'
 import RolagemEditorial from './components/layout/RolagemEditorial.vue'
 import TransicaoHero from './components/layout/TransicaoHero.vue'
@@ -25,6 +27,7 @@ async function selecionarServico(tipo: TipoServico) {
 </script>
 
 <template>
+  <IntroducaoMarca />
   <a class="atalho-conteudo" href="#conteudo-principal">Pular para o conteúdo principal</a>
   <MenuLateral />
   <TransicaoHero />
@@ -41,5 +44,6 @@ async function selecionarServico(tipo: TipoServico) {
   </main>
 
   <RodapeSite />
+  <GerenciadorConsentimento />
 </template>
 

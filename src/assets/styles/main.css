@@ -30,6 +30,8 @@
   --cor-superficie: #192437;
   --cor-borda: rgba(255, 255, 255, 0.11);
   --cor-foco: #9db9ff;
+  --cor-sucesso: #2fd27a;
+  --cor-erro: #ff6363;
   --fonte-principal: "Space Grotesk", sans-serif;
   --fonte-mono: "JetBrains Mono", monospace;
   color: var(--cor-texto);
