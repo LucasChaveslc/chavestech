@@ -34,10 +34,18 @@
         var registroConsentimento = JSON.parse(
           window.localStorage.getItem('chavestech:consentimento:v1') || 'null'
         );
+        var duracaoConsentimento = 180 * 24 * 60 * 60 * 1000;
+        var atualizadoEm = registroConsentimento
+          ? Date.parse(registroConsentimento.atualizadoEm)
+          : NaN;
         var registroValido = registroConsentimento
           && registroConsentimento.versao === 1
+          && registroConsentimento.politicaVersao === '1.0'
           && typeof registroConsentimento.analytics === 'boolean'
-          && typeof registroConsentimento.publicidade === 'boolean';
+          && typeof registroConsentimento.publicidade === 'boolean'
+          && Number.isFinite(atualizadoEm)
+          && atualizadoEm <= Date.now()
+          && Date.now() - atualizadoEm <= duracaoConsentimento;
 
         if (registroValido && (registroConsentimento.analytics || registroConsentimento.publicidade)) {
           window.gtag('consent', 'update', {

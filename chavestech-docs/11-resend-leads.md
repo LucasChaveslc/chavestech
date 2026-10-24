@@ -87,9 +87,9 @@ No GTM:
 - preencher todas as variáveis de ambiente;
 - informar o domínio oficial e verificar seu DNS no Resend;
 - informar o e-mail comercial destinatário;
-- concluir e revisar juridicamente a Política de Privacidade antes de receber leads reais;
-- identificar controlador e canal para exercício de direitos;
-- definir finalidade/base legal e prazos de retenção do e-mail comercial e dos registros no Resend;
+- revisar juridicamente a Política de Privacidade;
+- aplicar a rotina de exclusão de briefings sem contratação após seis meses da última interação;
+- manter apenas as informações necessárias quando o briefing resultar em contratação, observando os prazos legais de cada documento;
 - revisar/assinar o DPA do Resend e documentar regiões, subprocessadores e mecanismo de transferência internacional;
 - definir rotina de eliminação dos briefings no e-mail e no painel do Resend;
 - configurar rate limiting global no Vercel Firewall ou serviço distribuído se o volume/risco justificar;

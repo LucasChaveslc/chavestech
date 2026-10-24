@@ -6,6 +6,7 @@
 - Modo: Consent Mode V2 básico.
 - Sem escolha ou com todos os opcionais recusados, o script `gtm.js` não é carregado.
 - Preferências persistidas em `localStorage` na chave `chavestech:consentimento:v1`.
+- O registro contém a versão `1.0` da Política de Privacidade e expira após 180 dias.
 - Categorias opcionais: `analytics` e `publicidade`, ambas desativadas por padrão.
 - O evento central de consentimento é `chavestech_consent_ready`.
 
@@ -15,7 +16,12 @@ O código do site controla carregamento e consentimento, mas cada tag também pr
 
 ### Estado verificado do contêiner publicado
 
-Em 24/10/2026, o JavaScript público de `GTM-PCJQDH7L` foi inspecionado e retornou `tags: []`, `predicates: []` e `rules: []`. Portanto, **não existe uma tag GA4 na versão atualmente publicada do contêiner** e não há acionamento de GA4 a validar até que a tag seja criada e publicada. Caso ela exista apenas no espaço de trabalho do GTM, é necessário concluir a publicação.
+Em 24/10/2026, o JavaScript público de `GTM-PCJQDH7L` foi inspecionado e contém a tag Google com o ID `G-2ERCMEEW8Y` e tags de evento para `cta_click`, `form_start` e `generate_lead`.
+
+Permanecem duas correções no painel do Google:
+
+- desativar a detecção automática de dados fornecidos pelo usuário, atualmente habilitada para e-mail e telefone;
+- desativar somente `Interações com formulários` na medição otimizada, pois `form_start` já é enviado manualmente pelo site.
 
 ### Google Analytics 4
 
@@ -43,15 +49,15 @@ Não usar `All Pages` isoladamente em tags opcionais. O evento de consentimento 
 5. Alterar preferências pelo rodapé e confirmar o novo evento `chavestech_consent_ready`.
 6. Revogar uma categoria ou todas: cookies conhecidos da categoria são removidos e, se o GTM já estava carregado, a página reinicializa sob a nova escolha.
 7. Recarregar: a escolha válida deve ser restaurada antes de qualquer carregamento opcional.
-8. Repetir em 390px de largura e somente com teclado.
+8. Simular um registro com mais de 180 dias: o GTM deve permanecer bloqueado e o banner deve reaparecer.
+9. Repetir em 390px de largura e somente com teclado.
 
 ## Pendências antes da publicação definitiva
 
-- Concluir e revisar juridicamente a Política de Privacidade.
-- Definir controlador e canal de privacidade.
+- Revisar juridicamente a Política de Privacidade.
 - Confirmar retenção configurada no GA4.
 - Confirmar fornecedores, transferências internacionais e termos aplicáveis.
-- Publicar a versão correta do contêiner e validar no Tag Assistant.
+- Corrigir as duas opções automáticas do Google indicadas acima e validar no Tag Assistant.
 
 ## Resultado da validação local
 

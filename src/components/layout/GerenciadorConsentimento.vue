@@ -188,8 +188,8 @@ onBeforeUnmount(() => {
           </div>
 
           <p class="preferencias__politica">
-            Consulte a <a href="/politica-de-privacidade.html" target="_blank" rel="noreferrer">Política de Privacidade em preparação</a>
-            para conhecer o inventário atual e as informações ainda pendentes de validação.
+            Consulte a <a href="/politica-de-privacidade.html" target="_blank" rel="noreferrer">Política de Privacidade</a>
+            para saber quais dados são tratados, com quais finalidades e como exercer seus direitos.
           </p>
 
           <footer class="preferencias__acoes">

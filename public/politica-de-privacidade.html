@@ -4,55 +4,429 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#121a28">
-    <meta name="robots" content="noindex">
-    <title>Política de Privacidade em preparação | CHAVESTECH</title>
+    <meta name="description" content="Saiba como a CHAVESTECH coleta, utiliza, compartilha e protege dados pessoais no site e no briefing comercial.">
+    <title>Política de Privacidade | CHAVESTECH</title>
     <style>
-      :root { color-scheme: dark; font-family: "Space Grotesk", Arial, sans-serif; background: #121a28; color: #fff; }
-      * { box-sizing: border-box; }
-      body { min-width: 20rem; margin: 0; background-color: #121a28; background-image: linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px); background-size: 60px 60px; }
-      main { width: min(calc(100% - 2.5rem), 54rem); margin-inline: auto; padding: clamp(3rem,8vw,7rem) 0; }
-      .rotulo { color: #5b8cff; font-family: ui-monospace, monospace; font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; }
-      h1 { max-width: 15ch; margin: 1.5rem 0 0; font-size: clamp(2.6rem,8vw,5rem); letter-spacing: -.06em; line-height: .95; }
-      .abertura { max-width: 65ch; margin-top: 2rem; color: #d3dae6; font-size: 1.08rem; line-height: 1.65; }
-      section { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,.11); }
-      h2 { font-size: 1.4rem; }
-      p, li { color: #d3dae6; line-height: 1.65; }
-      li + li { margin-top: .65rem; }
-      a { display: inline-flex; min-height: 2.75rem; align-items: center; margin-top: 2.5rem; color: #9db9ff; text-underline-offset: .2em; }
+      :root {
+        color-scheme: dark;
+        background: #121a28;
+        color: #fff;
+        font-family: "Space Grotesk", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      *, *::before, *::after { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body {
+        min-width: 20rem;
+        margin: 0;
+        background-color: #121a28;
+        background-image:
+          linear-gradient(rgba(255, 255, 255, .045) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, .045) 1px, transparent 1px);
+        background-size: 60px 60px;
+      }
+
+      a { color: #9db9ff; text-underline-offset: .2em; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+      a:hover { color: #fff; }
       a:focus-visible { outline: 3px solid #9db9ff; outline-offset: 4px; }
+      p, li, dd { color: #d3dae6; line-height: 1.7; }
+      li + li { margin-top: .65rem; }
+      strong { color: #fff; }
+
+      .atalho {
+        position: fixed;
+        z-index: 10;
+        top: .75rem;
+        left: .75rem;
+        padding: .75rem 1rem;
+        border-radius: 999px;
+        background: #fff;
+        color: #121a28;
+        font-weight: 700;
+        transform: translateY(-180%);
+      }
+      .atalho:focus { transform: translateY(0); }
+
+      main { width: min(calc(100% - 2.5rem), 58rem); margin-inline: auto; padding: clamp(3rem, 8vw, 7rem) 0; }
+      .rotulo, .metadados, nav a, .identificacao strong {
+        font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
+        font-size: .72rem;
+        letter-spacing: .1em;
+        text-transform: uppercase;
+      }
+      .rotulo { color: #5b8cff; }
+      h1 { max-width: 15ch; margin: 1.5rem 0 0; font-size: clamp(2.6rem, 8vw, 5rem); letter-spacing: -.06em; line-height: .95; text-wrap: balance; }
+      h2 { margin: 0; color: #fff; font-size: clamp(1.45rem, 3vw, 2rem); letter-spacing: -.025em; line-height: 1.15; text-wrap: balance; }
+      h3 { margin: 2rem 0 .5rem; color: #fff; font-size: 1.05rem; }
+      .abertura { max-width: 67ch; margin: 2rem 0 0; font-size: clamp(1rem, 2vw, 1.1rem); }
+      .metadados { display: flex; flex-wrap: wrap; gap: .5rem 1.5rem; margin-top: 1.5rem; color: #a9b4c6; }
+
+      .identificacao { margin-top: 2rem; padding: 1.25rem; border: 1px solid rgba(91, 140, 255, .42); border-radius: 1rem; background: rgba(25, 36, 55, .92); }
+      .identificacao strong { display: block; margin-bottom: .55rem; color: #9db9ff; }
+      .identificacao p { margin: 0; }
+
+      nav { margin-top: 3rem; padding: 1.5rem 0; border-block: 1px solid rgba(255, 255, 255, .11); }
+      nav p { margin: 0 0 1rem; color: #fff; font-weight: 600; }
+      nav ol { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem 2rem; margin: 0; padding-left: 1.25rem; }
+      nav a { display: inline-block; min-height: 2.75rem; padding-block: .75rem; color: #a9b4c6; }
+
+      section { scroll-margin-top: 1rem; margin-top: 3.5rem; padding-top: 2.25rem; border-top: 1px solid rgba(255, 255, 255, .11); }
+      section > p, section > ul, section > ol, section > dl { max-width: 72ch; }
+      section a { overflow-wrap: anywhere; }
+      dl { margin-top: 1.5rem; }
+      dt { margin-top: 1.4rem; color: #fff; font-weight: 700; }
+      dd { margin: .4rem 0 0; }
+      .nota { padding-left: 1rem; border-left: 2px solid #5b8cff; color: #a9b4c6; }
+
+      .fornecedores { display: grid; gap: 1rem; margin-top: 1.5rem; }
+      .fornecedor { padding: 1.15rem; border: 1px solid rgba(255, 255, 255, .11); border-radius: .9rem; background: rgba(18, 26, 40, .78); }
+      .fornecedor h3 { margin: 0; }
+      .fornecedor p { margin: .5rem 0 0; }
+
+      footer { display: flex; flex-wrap: wrap; gap: 1rem 2rem; align-items: center; justify-content: space-between; margin-top: 4rem; padding-top: 1.5rem; border-top: 1px solid rgba(255, 255, 255, .11); }
+      footer a { display: inline-flex; min-height: 2.75rem; align-items: center; }
+      footer span { color: #a9b4c6; font-family: ui-monospace, "SFMono-Regular", Consolas, monospace; font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; }
+
+      @media (max-width: 640px) {
+        nav ol { grid-template-columns: 1fr; gap: .1rem; }
+        .fornecedor { padding: 1rem; }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        html { scroll-behavior: auto; }
+      }
     </style>
   </head>
   <body>
-    <main>
-      <span class="rotulo">Documento em preparação</span>
-      <h1>Política de Privacidade</h1>
-      <p class="abertura">Esta página registra apenas o funcionamento técnico já definido. Ela não representa uma declaração automática de conformidade e precisa ser concluída pelo responsável antes da publicação definitiva do site.</p>
+    <a class="atalho" href="#conteudo">Pular para o conteúdo</a>
+    <main id="conteudo">
+      <header>
+        <span class="rotulo">Privacidade e proteção de dados</span>
+        <h1>Política de Privacidade</h1>
+        <p class="abertura">
+          Esta política explica, em linguagem direta, como a CHAVESTECH trata dados pessoais quando você
+          navega pelo site, escolhe preferências de cookies ou envia um briefing comercial.
+        </p>
+        <div class="metadados">
+          <span>Versão 1.0</span>
+          <span>Última atualização: 24 de outubro de 2026</span>
+        </div>
 
-      <section>
-        <h2>O que já está definido</h2>
+        <aside class="identificacao" aria-label="Identificação do controlador">
+          <strong>Controlador dos dados</strong>
+          <p>
+            Lucas Francisco de Araujo Chaves da Silveira · Microempreendedor Individual · Nome fantasia CHAVESTECH ·
+            CNPJ 42.037.123/0001-47 · Rua dos Contabilistas, Nova Iguaçu/RJ · CEP 26022-760.
+          </p>
+        </aside>
+      </header>
+
+      <nav aria-label="Conteúdo da política">
+        <p>Nesta política</p>
+        <ol>
+          <li><a href="#responsavel">Responsável e contato</a></li>
+          <li><a href="#dados">Dados tratados</a></li>
+          <li><a href="#finalidades">Finalidades e bases legais</a></li>
+          <li><a href="#cookies">Cookies e analytics</a></li>
+          <li><a href="#compartilhamento">Fornecedores e compartilhamento</a></li>
+          <li><a href="#transferencias">Transferências internacionais</a></li>
+          <li><a href="#retencao">Retenção e eliminação</a></li>
+          <li><a href="#seguranca">Segurança</a></li>
+          <li><a href="#direitos">Seus direitos</a></li>
+          <li><a href="#menores">Crianças e adolescentes</a></li>
+          <li><a href="#decisoes">Decisões automatizadas</a></li>
+          <li><a href="#alteracoes">Alterações desta política</a></li>
+        </ol>
+      </nav>
+
+      <section id="responsavel">
+        <h2>1. Responsável e contato</h2>
+        <p>
+          Lucas Francisco de Araujo Chaves da Silveira, Microempreendedor Individual inscrito no CNPJ
+          42.037.123/0001-47 e que atua sob o nome fantasia CHAVESTECH, é o controlador responsável pelas decisões sobre o
+          tratamento de dados pessoais descrito nesta política.
+        </p>
+        <p>
+          Para dúvidas, solicitações ou exercício de direitos relacionados a dados pessoais, escreva para
+          <a href="mailto:contatochavestech@gmail.com">contatochavestech@gmail.com</a>. Para proteger o titular,
+          poderemos pedir informações adicionais estritamente necessárias para confirmar a identidade de quem faz a solicitação.
+        </p>
+        <p>
+          A CHAVESTECH não possui encarregado formalmente nomeado. Considerando seu enquadramento como agente de
+          tratamento de pequeno porte, mantém o e-mail acima como canal direto de comunicação com os titulares,
+          nos termos da regulamentação aplicável da ANPD.
+        </p>
+      </section>
+
+      <section id="dados">
+        <h2>2. Quais dados tratamos</h2>
+
+        <h3>Dados informados no briefing</h3>
+        <p>Quando você envia uma solicitação comercial, podemos tratar:</p>
         <ul>
-          <li>A escolha de cookies é armazenada no próprio navegador para ser lembrada em visitas futuras.</li>
-          <li>As categorias analítica e de publicidade começam desativadas.</li>
-          <li>O Google Tag Manager só é carregado depois de uma autorização opcional.</li>
-          <li>As preferências podem ser alteradas ou revogadas pelo rodapé do site.</li>
-          <li>Quando o briefing for enviado, os dados informados serão encaminhados ao e-mail comercial por meio do Resend.</li>
+          <li>tipo de projeto, objetivos, fase atual, prazo ou data desejada;</li>
+          <li>endereço de site ou sistema existente, quando informado;</li>
+          <li>descrição da ideia e, para sistemas, tarefas que a solução deve facilitar;</li>
+          <li>nome, e-mail e WhatsApp;</li>
+          <li>empresa ou marca, quando informada;</li>
+          <li>confirmação de leitura da Política de Privacidade;</li>
+          <li>identificador técnico da solicitação e horário aproximado de início do preenchimento.</li>
+        </ul>
+        <p class="nota">
+          Não solicitamos dados pessoais sensíveis. Evite incluir informações sobre saúde, biometria, religião,
+          opinião política, origem racial ou étnica, vida sexual ou outros dados sensíveis nos campos de texto livre.
+        </p>
+
+        <h3>Dados técnicos e de segurança</h3>
+        <ul>
+          <li>origem da requisição, tipo de conteúdo e informações técnicas necessárias para atender o pedido;</li>
+          <li>endereço IP transformado por HMAC em um identificador pseudonimizado usado no controle de abuso;</li>
+          <li>protocolo da solicitação, identificador de entrega do e-mail e classe de eventuais erros técnicos.</li>
+        </ul>
+        <p>O conteúdo integral do briefing não é gravado nos logs técnicos criados pela aplicação.</p>
+
+        <h3>Dados de navegação, mediante autorização</h3>
+        <p>
+          Com sua autorização para cookies analíticos, o Google Analytics pode receber dados de dispositivo e
+          navegador, páginas visitadas, interações, origem aproximada da visita e eventos como clique em chamadas
+          comerciais, início do briefing e geração de lead. Os eventos personalizados da CHAVESTECH usam apenas
+          identificadores de interface, tipo de serviço e identificador do formulário; não incluem o conteúdo digitado.
+        </p>
+      </section>
+
+      <section id="finalidades">
+        <h2>3. Para que usamos os dados e em quais bases legais</h2>
+        <dl>
+          <dt>Responder e avaliar sua solicitação comercial</dt>
+          <dd>
+            Usamos os dados do briefing para compreender a demanda, entrar em contato e conduzir tratativas preliminares
+            a uma possível contratação. As bases legais aplicáveis são o consentimento registrado no formulário e,
+            quando cabível, procedimentos preliminares relacionados a contrato solicitados pelo próprio titular
+            (art. 7º, I e V, da LGPD).
+          </dd>
+
+          <dt>Proteger o formulário e evitar abuso</dt>
+          <dd>
+            Usamos validações, limite temporário de envios, campo antispam e idempotência para impedir fraude,
+            automação abusiva e duplicidade. A base legal é o legítimo interesse em manter o serviço seguro e funcional,
+            respeitados os direitos e as expectativas do titular (art. 7º, IX, da LGPD).
+          </dd>
+
+          <dt>Medir navegação e desempenho</dt>
+          <dd>
+            Se você autorizar cookies analíticos, usamos o Google Analytics para produzir estatísticas de uso e compreender
+            quais conteúdos e chamadas despertam interesse. A base legal é o consentimento (art. 7º, I, da LGPD).
+          </dd>
+
+          <dt>Lembrar suas escolhas de privacidade</dt>
+          <dd>
+            Armazenamos no navegador as categorias aceitas ou recusadas, a versão do registro e a data da escolha para
+            aplicar sua decisão nas próximas visitas e permitir sua alteração ou revogação.
+          </dd>
+
+          <dt>Cumprir obrigações e exercer direitos</dt>
+          <dd>
+            Quando necessário, determinados dados poderão ser usados para cumprir obrigações legais ou regulatórias e
+            para o exercício regular de direitos em processos judiciais, administrativos ou arbitrais
+            (art. 7º, II e VI, da LGPD).
+          </dd>
+        </dl>
+      </section>
+
+      <section id="cookies">
+        <h2>4. Cookies, armazenamento local e Google Analytics</h2>
+        <p>
+          As categorias opcionais começam desativadas. A ausência de resposta não é tratada como autorização e a recusa
+          não impede o funcionamento normal do site. O Google Tag Manager e as tags opcionais somente são carregados
+          após uma escolha que autorize a categoria correspondente.
+        </p>
+        <ul>
+          <li>
+            <strong>Preferências de privacidade:</strong> o registro <code>chavestech:consentimento:v1</code> fica no
+            armazenamento local do navegador e contém as escolhas de analytics e publicidade, a versão da política e a data da decisão.
+          </li>
+          <li>
+            <strong>Introdução da marca:</strong> o registro <code>chavestech:intro-vista:v1</code> fica no armazenamento
+            da sessão apenas para evitar a repetição do vídeo de abertura durante a mesma sessão.
+          </li>
+          <li>
+            <strong>Google Analytics:</strong> quando autorizado, pode criar cookies como <code>_ga</code> e
+            <code>_ga_*</code>, usados para distinguir navegadores e produzir métricas agregadas. Em regra, esses cookies
+            podem permanecer por até dois anos, sujeitos à configuração da propriedade, ao navegador e à revogação.
+          </li>
+          <li>
+            <strong>Publicidade:</strong> existe um controle separado e desativado por padrão. Na data desta política,
+            não identificamos uma tag publicitária ativa no contêiner publicado. Qualquer ativação futura exigirá
+            autorização correspondente e atualização desta política quando alterar o tratamento.
+          </li>
+        </ul>
+        <p>
+          Você pode aceitar, rejeitar ou personalizar as categorias no banner e alterar a decisão a qualquer momento em
+          “Preferências de cookies”, no rodapé do site. A revogação remove cookies conhecidos dessas categorias e pode
+          recarregar a página para interromper as tags já iniciadas. Você também pode apagar cookies e armazenamento local
+          nas configurações do navegador.
+        </p>
+      </section>
+
+      <section id="compartilhamento">
+        <h2>5. Fornecedores e compartilhamento</h2>
+        <p>Compartilhamos dados somente na medida necessária para operar o site e atender sua solicitação.</p>
+        <div class="fornecedores">
+          <article class="fornecedor">
+            <h3>Vercel</h3>
+            <p>
+              Hospeda o site e executa a função que recebe o briefing. Pode processar dados técnicos de conexão e o
+              conteúdo enviado durante a execução da solicitação.
+              <a href="https://vercel.com/legal/privacy-notice" target="_blank" rel="noreferrer">Aviso de privacidade da Vercel</a>.
+            </p>
+          </article>
+          <article class="fornecedor">
+            <h3>Resend</h3>
+            <p>
+              Realiza a entrega do briefing por e-mail e recebe o conteúdo da mensagem, destinatário, endereço de resposta,
+              protocolo de idempotência e metadados técnicos de entrega.
+              <a href="https://resend.com/legal/privacy-policy" target="_blank" rel="noreferrer">Política de privacidade do Resend</a>.
+            </p>
+          </article>
+          <article class="fornecedor">
+            <h3>Google</h3>
+            <p>
+              Fornece o Google Tag Manager e o Google Analytics, somente após a autorização aplicável, e também pode operar
+              a caixa de e-mail comercial que recebe o briefing. Nesse último caso, o conteúdo integral da solicitação fica
+              disponível na caixa comercial.
+              <a href="https://policies.google.com/privacy?hl=pt-BR" target="_blank" rel="noreferrer">Política de Privacidade do Google</a>.
+            </p>
+          </article>
+        </div>
+        <p>
+          Também poderemos compartilhar dados quando isso for exigido por lei, ordem judicial ou autoridade competente,
+          ou quando necessário para exercer regularmente direitos. Não vendemos os dados do briefing.
+        </p>
+      </section>
+
+      <section id="transferencias">
+        <h2>6. Transferências internacionais</h2>
+        <p>
+          Vercel, Resend e Google são fornecedores internacionais e podem processar dados em infraestrutura localizada
+          fora do Brasil. Essas operações devem observar os requisitos dos arts. 33 a 36 da LGPD e os mecanismos aplicáveis,
+          como decisões de adequação, cláusulas contratuais específicas ou cláusulas-padrão reconhecidas pela ANPD.
+        </p>
+        <p>
+          As regiões efetivas, os subprocessadores e os instrumentos contratuais podem variar conforme o serviço e a
+          configuração contratada. Você pode solicitar informações atualizadas pelo canal de privacidade.
+        </p>
+      </section>
+
+      <section id="retencao">
+        <h2>7. Por quanto tempo mantemos os dados</h2>
+        <ul>
+          <li>
+            <strong>Briefing no navegador:</strong> permanece apenas na memória da página durante o preenchimento e não é
+            gravado no armazenamento local pela aplicação. Após um envio confirmado, o formulário é reiniciado.
+          </li>
+          <li>
+            <strong>Briefing sem contratação:</strong> permanece na infraestrutura de entrega e na caixa de e-mail por até
+            seis meses após a última interação. Depois desse período, será eliminado, salvo se houver nova finalidade legítima
+            ou hipótese legal de conservação devidamente aplicável.
+          </li>
+          <li>
+            <strong>Briefing que resultar em contratação:</strong> as informações necessárias serão incorporadas à documentação
+            do projeto. O conteúdo que não for mais necessário será eliminado; contratos, documentos fiscais e registros
+            essenciais seguirão os prazos legais próprios e as hipóteses do art. 16 da LGPD.
+          </li>
+          <li>
+            <strong>Controle de abuso:</strong> o identificador derivado do IP permanece em memória por quinze minutos em
+            cada instância ativa da função. A chave de idempotência pode ser reconhecida pelo Resend por até vinte e quatro horas.
+          </li>
+          <li>
+            <strong>Preferências:</strong> ficam no navegador por até seis meses. Depois disso, ou quando a versão da política
+            mudar, o site solicitará uma nova escolha. Você também pode alterar a decisão ou apagar os dados do navegador antes.
+          </li>
+          <li>
+            <strong>Analytics:</strong> os dados detalhados de eventos e usuários serão mantidos por até quatorze meses na
+            propriedade do Google Analytics, sem reinício desse prazo por nova atividade, e o tratamento poderá ser
+            interrompido pela revogação do consentimento.
+          </li>
+          <li>
+            <strong>Logs técnicos:</strong> os registros produzidos pela aplicação serão mantidos por até trinta dias,
+            ressalvado prazo menor aplicado pelo fornecedor de infraestrutura ou conservação necessária para investigar abuso ou incidente.
+          </li>
+          <li>
+            <strong>Solicitações de direitos e incidentes:</strong> registros mínimos de atendimento e de incidentes de
+            segurança poderão ser mantidos por até cinco anos para demonstrar providências e cumprir obrigações regulatórias.
+          </li>
         </ul>
       </section>
 
-      <section>
-        <h2>Informações que o responsável precisa validar</h2>
-        <ul>
-          <li>Identificação e dados de contato do controlador.</li>
-          <li>Canal para solicitações relacionadas a dados pessoais.</li>
-          <li>Dados efetivamente tratados pelo formulário quando seu envio for ativado.</li>
-          <li>Finalidades, bases legais e prazos de retenção aplicáveis.</li>
-          <li>Fornecedores envolvidos, incluindo Google, Vercel e Resend, com suas regiões de processamento e instrumentos contratuais.</li>
-          <li>Transferências internacionais e mecanismos utilizados.</li>
-          <li>Data de vigência e histórico de atualização da política.</li>
-        </ul>
+      <section id="seguranca">
+        <h2>8. Como protegemos os dados</h2>
+        <p>
+          Adotamos medidas proporcionais ao serviço, incluindo conexão HTTPS, validação e normalização no servidor, limite
+          de tamanho da requisição, restrição de origem, campo antispam, tempo mínimo de preenchimento, limitação de envios,
+          idempotência e exclusão do conteúdo do briefing dos logs produzidos pela aplicação. O endereço IP usado na proteção
+          contra abuso é pseudonimizado com chave secreta antes de entrar no controle temporário.
+        </p>
+        <p>
+          Nenhum sistema é totalmente imune a riscos. Se ocorrer incidente que possa causar risco ou dano relevante, a
+          CHAVESTECH adotará as medidas de contenção e comunicação aplicáveis, inclusive à ANPD e aos titulares afetados.
+          Quando a comunicação for obrigatória, ela será realizada em até três dias úteis, ressalvadas as exceções previstas
+          na regulamentação vigente.
+        </p>
       </section>
 
-      <a href="/">← Voltar ao site</a>
+      <section id="direitos">
+        <h2>9. Seus direitos</h2>
+        <p>Nos termos da LGPD, você pode solicitar, quando aplicável:</p>
+        <ul>
+          <li>confirmação da existência de tratamento e acesso aos dados;</li>
+          <li>correção de dados incompletos, inexatos ou desatualizados;</li>
+          <li>anonimização, bloqueio ou eliminação de dados desnecessários, excessivos ou tratados irregularmente;</li>
+          <li>portabilidade, observada a regulamentação e os segredos comercial e industrial;</li>
+          <li>eliminação dos dados tratados com consentimento, ressalvadas as hipóteses legais de conservação;</li>
+          <li>informação sobre entidades públicas e privadas com as quais houve compartilhamento;</li>
+          <li>informação sobre a possibilidade de negar consentimento e suas consequências;</li>
+          <li>revogação do consentimento e oposição a tratamento irregular;</li>
+          <li>revisão de decisões tomadas unicamente com base em tratamento automatizado, quando houver;</li>
+          <li>petição perante a Autoridade Nacional de Proteção de Dados.</li>
+        </ul>
+        <p>
+          Envie a solicitação para <a href="mailto:contatochavestech@gmail.com">contatochavestech@gmail.com</a>.
+          O atendimento é gratuito. A confirmação simplificada será fornecida conforme a legislação; pedidos de acesso
+          detalhado serão respondidos em até quinze dias, ressalvadas hipóteses legais ou necessidade justificada de complementação.
+        </p>
+      </section>
+
+      <section id="menores">
+        <h2>10. Crianças e adolescentes</h2>
+        <p>
+          O site e o briefing são direcionados a pessoas interessadas em serviços profissionais e não são destinados à
+          coleta consciente de dados de crianças. Se você for responsável legal e identificar o envio de dados de uma criança,
+          entre em contato para que possamos avaliar e adotar as providências adequadas, sempre considerando seu melhor interesse.
+        </p>
+      </section>
+
+      <section id="decisoes">
+        <h2>11. Decisões automatizadas</h2>
+        <p>
+          A CHAVESTECH não utiliza os dados do briefing para decisões que produzam efeitos jurídicos ou relevantes baseadas
+          unicamente em tratamento automatizado. O formulário apenas valida campos, aplica controles de segurança e encaminha
+          a solicitação para análise humana.
+        </p>
+      </section>
+
+      <section id="alteracoes">
+        <h2>12. Alterações desta política</h2>
+        <p>
+          Esta política poderá ser atualizada quando o site, os fornecedores, as finalidades ou as regras aplicáveis mudarem.
+          A data e a versão no início do documento indicarão a atualização mais recente. Mudanças que exijam nova autorização
+          serão apresentadas antes da ativação do tratamento correspondente.
+        </p>
+      </section>
+
+      <footer>
+        <a href="/">← Voltar ao site</a>
+        <span>CHAVESTECH · ideias que funcionam no mundo real</span>
+      </footer>
     </main>
   </body>
 </html>

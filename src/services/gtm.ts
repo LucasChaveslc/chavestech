@@ -4,6 +4,8 @@ type EstadoConsentimento = 'denied' | 'granted'
 
 const CHAVE_CONSENTIMENTO = 'chavestech:consentimento:v1'
 const VERSAO_CONSENTIMENTO = 1
+const VERSAO_POLITICA_PRIVACIDADE = '1.0'
+const DURACAO_CONSENTIMENTO_MS = 180 * 24 * 60 * 60 * 1000
 export const EVENTO_ABRIR_PREFERENCIAS = 'chavestech:abrir-preferencias-cookies'
 
 export interface PreferenciasConsentimento {
@@ -13,6 +15,7 @@ export interface PreferenciasConsentimento {
 
 export interface RegistroConsentimento extends PreferenciasConsentimento {
   versao: number
+  politicaVersao: string
   atualizadoEm: string
 }
 
@@ -29,10 +32,17 @@ interface DadosCliqueCta {
 function registroValido(valor: unknown): valor is RegistroConsentimento {
   if (!valor || typeof valor !== 'object') return false
   const registro = valor as Partial<RegistroConsentimento>
+  const atualizadoEm = typeof registro.atualizadoEm === 'string'
+    ? Date.parse(registro.atualizadoEm)
+    : Number.NaN
+
   return registro.versao === VERSAO_CONSENTIMENTO
+    && registro.politicaVersao === VERSAO_POLITICA_PRIVACIDADE
     && typeof registro.analytics === 'boolean'
     && typeof registro.publicidade === 'boolean'
-    && typeof registro.atualizadoEm === 'string'
+    && Number.isFinite(atualizadoEm)
+    && atualizadoEm <= Date.now()
+    && Date.now() - atualizadoEm <= DURACAO_CONSENTIMENTO_MS
 }
 
 export function lerConsentimentoSalvo(): RegistroConsentimento | null {
@@ -89,6 +99,7 @@ export function atualizarConsentimentoGtm(preferencias: PreferenciasConsentiment
 
   const registro: RegistroConsentimento = {
     versao: VERSAO_CONSENTIMENTO,
+    politicaVersao: VERSAO_POLITICA_PRIVACIDADE,
     atualizadoEm: new Date().toISOString(),
     ...preferencias,
   }
