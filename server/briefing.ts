@@ -90,10 +90,10 @@ function emailValido(valor: string) {
 }
 
 function telefoneValido(valor: string) {
-  if (!valor) return true
+  if (!valor) return false
   if (!/^[+()\d.\s-]+$/.test(valor)) return false
   const digitos = valor.replace(/\D/g, '')
-  return digitos.length >= 8 && digitos.length <= 15
+  return digitos.length >= 10 && digitos.length <= 15
 }
 
 function dataValida(valor: string) {

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, nextTick, ref, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue'
 import { fasesProjeto, opcoesObjetivo, servicosSite, type TipoServico } from '../../content/site'
 import { enviarBriefing, ErroEnvioBriefing, type DadosBriefing } from '../../services/briefing'
 import { registrarInicioBriefing, registrarLeadGerado } from '../../services/gtm'
@@ -34,11 +34,14 @@ const erro = ref('')
 const briefingIniciado = ref(false)
 const estadoEnvio = ref<'pronto' | 'enviando' | 'sucesso' | 'erro'>('pronto')
 const mensagemEnvio = ref('')
+const campoEnvioInvalido = ref('')
 const mensagemEnvioElemento = ref<HTMLElement | null>(null)
-const iniciadoEm = Date.now()
+const sucessoElemento = ref<HTMLElement | null>(null)
+const iniciadoEm = ref(Date.now())
 const idSolicitacao = ref('')
 const assinaturaSolicitacao = ref('')
 const leadRegistrado = ref(false)
+let temporizadorReinicio: number | undefined
 
 const progresso = computed(() => `${etapa.value * 25}%`)
 const tipoLegivel = computed(() => tiposProjeto.find((item) => item.valor === tipo.value)?.rotulo ?? 'Não informado')
@@ -72,7 +75,7 @@ function criarIdSolicitacao() {
 
 function montarDadosBriefing(): DadosBriefing {
   const conteudo = {
-    iniciadoEm,
+    iniciadoEm: iniciadoEm.value,
     enderecoConfirmacao: enderecoConfirmacao.value,
     tipoProjeto: tipo.value,
     urlExistente: urlExistente.value,
@@ -98,11 +101,79 @@ function montarDadosBriefing(): DadosBriefing {
   return { idSolicitacao: idSolicitacao.value, ...conteudo }
 }
 
-async function informarErroEnvio(mensagem: string) {
+function whatsappValido(valor: string) {
+  if (!/^[+()\d.\s-]+$/.test(valor)) return false
+  const digitos = valor.replace(/\D/g, '')
+  return digitos.length >= 10 && digitos.length <= 15
+}
+
+function zerarBriefing() {
+  etapa.value = 1
+  tipo.value = ''
+  urlExistente.value = ''
+  objetivos.value = []
+  descricao.value = ''
+  tarefasSistema.value = ''
+  fase.value = ''
+  prazo.value = 'sem-data'
+  dataDesejada.value = ''
+  nome.value = ''
+  email.value = ''
+  whatsapp.value = ''
+  empresa.value = ''
+  consentimentoContato.value = false
+  enderecoConfirmacao.value = ''
+  erro.value = ''
+  mensagemEnvio.value = ''
+  campoEnvioInvalido.value = ''
+  briefingIniciado.value = false
+  iniciadoEm.value = Date.now()
+  idSolicitacao.value = ''
+  assinaturaSolicitacao.value = ''
+  leadRegistrado.value = false
+  estadoEnvio.value = 'pronto'
+}
+
+function agendarNovoBriefing() {
+  window.clearTimeout(temporizadorReinicio)
+  temporizadorReinicio = window.setTimeout(zerarBriefing, 3_000)
+}
+
+function prepararEstadoVisivel(elemento: Element) {
+  if (estadoEnvio.value !== 'sucesso') return
+  const painel = elemento as HTMLElement
+  const reduzirMovimento = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  painel.focus({ preventScroll: true })
+  painel.scrollIntoView({ behavior: reduzirMovimento ? 'auto' : 'smooth', block: 'center' })
+}
+
+function concluirEntradaEstado() {
+  if (estadoEnvio.value === 'sucesso') {
+    sucessoElemento.value?.focus({ preventScroll: true })
+    agendarNovoBriefing()
+    return
+  }
+
+  document.querySelector<HTMLElement>('#titulo-etapa')?.focus({ preventScroll: true })
+}
+
+async function informarErroEnvio(mensagem: string, campo = '') {
   estadoEnvio.value = 'erro'
   mensagemEnvio.value = mensagem
+  campoEnvioInvalido.value = campo
   await nextTick()
+  if (campo) {
+    document.querySelector<HTMLElement>(`[name="${campo}"]`)?.focus()
+    return
+  }
   mensagemEnvioElemento.value?.focus()
+}
+
+function limparErroCampo(campo: string) {
+  if (campoEnvioInvalido.value !== campo) return
+  campoEnvioInvalido.value = ''
+  mensagemEnvio.value = ''
+  estadoEnvio.value = 'pronto'
 }
 
 async function enviarSolicitacao() {
@@ -110,21 +181,27 @@ async function enviarSolicitacao() {
 
   erro.value = ''
   mensagemEnvio.value = ''
+  campoEnvioInvalido.value = ''
 
   if (nome.value.trim().length < 2) {
-    await informarErroEnvio('Informe seu nome para enviarmos a solicitação.')
+    await informarErroEnvio('Informe seu nome para enviarmos a solicitação.', 'nome')
     return
   }
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim())) {
-    await informarErroEnvio('Informe um e-mail válido para podermos responder.')
+    await informarErroEnvio('Informe um e-mail válido para podermos responder.', 'email')
+    return
+  }
+  if (!whatsappValido(whatsapp.value.trim())) {
+    await informarErroEnvio('Informe um WhatsApp válido com DDD para continuarmos a conversa.', 'whatsapp')
     return
   }
   if (prazo.value === 'com-data' && !dataDesejada.value) {
-    await informarErroEnvio('Informe a data desejada ou selecione “Sem data definida”.')
+    etapa.value = 3
+    await informarErroEnvio('Informe a data desejada ou selecione “Sem data definida”.', 'data_desejada')
     return
   }
   if (!consentimentoContato.value) {
-    await informarErroEnvio('Confirme a leitura da Política de Privacidade para enviar sua solicitação.')
+    await informarErroEnvio('Confirme a leitura da Política de Privacidade para enviar sua solicitação.', 'consentimento_contato')
     return
   }
 
@@ -134,15 +211,13 @@ async function enviarSolicitacao() {
   try {
     await enviarBriefing(montarDadosBriefing())
     estadoEnvio.value = 'sucesso'
-    mensagemEnvio.value = 'Solicitação enviada. Vamos responder pelo contato informado.'
+    mensagemEnvio.value = ''
 
     if (!leadRegistrado.value) {
       registrarLeadGerado(obterTipoServicoSelecionado())
       leadRegistrado.value = true
     }
 
-    await nextTick()
-    mensagemEnvioElemento.value?.focus()
   } catch (erroEnvio) {
     const mensagem = erroEnvio instanceof ErroEnvioBriefing
       ? erroEnvio.message
@@ -174,6 +249,8 @@ function editar(numero: number) {
   erro.value = ''
   focarTitulo()
 }
+
+onBeforeUnmount(() => window.clearTimeout(temporizadorReinicio))
 </script>
 
 <template>
@@ -189,7 +266,33 @@ function editar(numero: number) {
         </div>
       </header>
 
-      <form id="briefing_orcamento" class="briefing" novalidate :aria-busy="estadoEnvio === 'enviando'" @input="registrarInicioReal" @submit.prevent="enviarSolicitacao">
+      <Transition name="briefing-troca" mode="out-in" @before-enter="prepararEstadoVisivel" @after-enter="concluirEntradaEstado">
+        <div
+          v-if="estadoEnvio === 'sucesso'"
+          ref="sucessoElemento"
+          key="sucesso"
+          class="briefing briefing-sucesso"
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+          tabindex="-1"
+        >
+          <div class="briefing-sucesso__conteudo">
+            <div class="briefing-sucesso__sinal" aria-hidden="true">
+              <svg viewBox="0 0 120 120">
+                <g class="briefing-sucesso__orbita"><circle cx="60" cy="60" r="43" /></g>
+                <g class="briefing-sucesso__check"><path d="m38 61 14 14 31-32" /></g>
+              </svg>
+            </div>
+            <p class="briefing-sucesso__rotulo">Envio confirmado</p>
+            <h3>Recebemos seu contato.</h3>
+            <p>Obrigado por compartilhar sua ideia. Vamos continuar a conversa pelo WhatsApp informado.</p>
+            <div class="briefing-sucesso__tempo" aria-hidden="true"><i /></div>
+            <small>Preparando um novo briefing…</small>
+          </div>
+        </div>
+
+        <form v-else id="briefing_orcamento" key="formulario" class="briefing" novalidate :aria-busy="estadoEnvio === 'enviando'" @input="registrarInicioReal" @submit.prevent="enviarSolicitacao">
         <div class="briefing__progresso">
           <span>Etapa {{ String(etapa).padStart(2, '0') }} / 04</span>
           <span>{{ etapa * 25 }}%</span>
@@ -232,16 +335,17 @@ function editar(numero: number) {
               <p>Prazo desejado <small>Opcional</small></p>
               <label><input v-model="prazo" type="radio" name="prazo" value="sem-data"> Sem data definida</label>
               <label><input v-model="prazo" type="radio" name="prazo" value="com-data"> Tenho uma data em mente</label>
-              <input v-if="prazo === 'com-data'" v-model="dataDesejada" name="data_desejada" type="date" aria-label="Data desejada">
+              <input v-if="prazo === 'com-data'" v-model="dataDesejada" name="data_desejada" type="date" aria-label="Data desejada" :aria-invalid="campoEnvioInvalido === 'data_desejada' ? 'true' : undefined" :aria-describedby="campoEnvioInvalido === 'data_desejada' ? 'erro-data-desejada' : undefined" @input="limparErroCampo('data_desejada')">
+              <small v-if="campoEnvioInvalido === 'data_desejada'" id="erro-data-desejada" class="campo-texto__erro" role="alert">{{ mensagemEnvio }}</small>
             </div>
           </fieldset>
 
           <fieldset v-else>
             <legend id="titulo-etapa" tabindex="-1">Como podemos falar com você?</legend>
             <div class="briefing__campos">
-              <label class="campo-texto"><span>Nome</span><input v-model="nome" name="nome" type="text" autocomplete="name"></label>
-              <label class="campo-texto"><span>E-mail</span><input v-model="email" name="email" type="email" autocomplete="email" spellcheck="false"></label>
-              <label class="campo-texto"><span>WhatsApp <small>Opcional</small></span><input v-model="whatsapp" name="whatsapp" type="tel" autocomplete="tel" placeholder="+55 (00) 00000-0000"></label>
+              <label class="campo-texto"><span>Nome</span><input v-model="nome" name="nome" type="text" autocomplete="name" :aria-invalid="campoEnvioInvalido === 'nome' ? 'true' : undefined" :aria-describedby="campoEnvioInvalido === 'nome' ? 'erro-nome' : undefined" @input="limparErroCampo('nome')"><small v-if="campoEnvioInvalido === 'nome'" id="erro-nome" class="campo-texto__erro" role="alert">{{ mensagemEnvio }}</small></label>
+              <label class="campo-texto"><span>E-mail</span><input v-model="email" name="email" type="email" autocomplete="email" spellcheck="false" :aria-invalid="campoEnvioInvalido === 'email' ? 'true' : undefined" :aria-describedby="campoEnvioInvalido === 'email' ? 'erro-email' : undefined" @input="limparErroCampo('email')"><small v-if="campoEnvioInvalido === 'email'" id="erro-email" class="campo-texto__erro" role="alert">{{ mensagemEnvio }}</small></label>
+              <label class="campo-texto"><span>WhatsApp</span><input v-model="whatsapp" name="whatsapp" type="tel" inputmode="tel" autocomplete="tel" maxlength="30" required aria-required="true" placeholder="+55 (00) 00000-0000" :aria-invalid="campoEnvioInvalido === 'whatsapp' ? 'true' : undefined" :aria-describedby="campoEnvioInvalido === 'whatsapp' ? 'erro-whatsapp' : undefined" @input="limparErroCampo('whatsapp')"><small v-if="campoEnvioInvalido === 'whatsapp'" id="erro-whatsapp" class="campo-texto__erro" role="alert">{{ mensagemEnvio }}</small></label>
               <label class="campo-texto"><span>Empresa ou marca <small>Opcional</small></span><input v-model="empresa" name="empresa" type="text" autocomplete="organization"></label>
             </div>
             <div class="briefing__resumo">
@@ -250,9 +354,10 @@ function editar(numero: number) {
               <div><span>Fase</span><strong>{{ fase || 'Não informada' }}</strong><button type="button" @click="editar(3)">Editar</button></div>
             </div>
             <label class="briefing__consentimento">
-              <input v-model="consentimentoContato" name="consentimento_contato" type="checkbox">
+              <input v-model="consentimentoContato" name="consentimento_contato" type="checkbox" :aria-invalid="campoEnvioInvalido === 'consentimento_contato' ? 'true' : undefined" :aria-describedby="campoEnvioInvalido === 'consentimento_contato' ? 'erro-consentimento' : undefined" @change="limparErroCampo('consentimento_contato')">
               <span>Li a <a href="/politica-de-privacidade.html" target="_blank" rel="noreferrer" @click.stop>Política de Privacidade</a> e concordo com o uso dos dados para contato sobre minha solicitação.</span>
             </label>
+            <p v-if="campoEnvioInvalido === 'consentimento_contato'" id="erro-consentimento" class="briefing__erro-inline" role="alert">{{ mensagemEnvio }}</p>
             <label class="briefing__armadilha" aria-hidden="true">
               Confirme seu endereço
               <input v-model="enderecoConfirmacao" name="endereco_confirmacao" type="text" tabindex="-1" autocomplete="off">
@@ -270,13 +375,13 @@ function editar(numero: number) {
             v-else
             type="submit"
             class="briefing__continuar"
-            :disabled="estadoEnvio === 'enviando' || estadoEnvio === 'sucesso'"
+            :disabled="estadoEnvio === 'enviando'"
           >
-            {{ estadoEnvio === 'enviando' ? 'Enviando…' : estadoEnvio === 'sucesso' ? 'Solicitação enviada' : 'Enviar meu projeto' }}
+            {{ estadoEnvio === 'enviando' ? 'Enviando…' : 'Enviar meu projeto' }}
           </button>
         </div>
         <p
-          v-if="mensagemEnvio"
+          v-if="mensagemEnvio && !campoEnvioInvalido"
           ref="mensagemEnvioElemento"
           class="briefing__status"
           :class="`briefing__status--${estadoEnvio}`"
@@ -285,7 +390,8 @@ function editar(numero: number) {
         >
           {{ mensagemEnvio }}
         </p>
-      </form>
+        </form>
+      </Transition>
     </div>
   </section>
 </template>
@@ -322,6 +428,7 @@ function editar(numero: number) {
 .campo-texto small, .briefing__prazo small { color: var(--cor-texto-discreto); font-weight: 400; }
 .campo-texto input, .campo-texto textarea, .briefing__prazo > input { width: 100%; min-height: 3rem; padding: .8rem 0; border: 0; border-bottom: 1px solid var(--cor-borda); border-radius: 0; background: transparent; color: var(--cor-texto); font: inherit; resize: vertical; }
 .campo-texto input::placeholder, .campo-texto textarea::placeholder { color: #7e8a9f; }
+.campo-texto > .campo-texto__erro, .briefing__prazo > .campo-texto__erro, .briefing__erro-inline { display: block; margin: .6rem 0 0; color: #ffc2c2; font-size: .75rem; font-weight: 500; line-height: 1.45; }
 .briefing__prazo { display: grid; gap: .8rem; margin-top: 2.5rem; }
 .briefing__prazo label { color: var(--cor-texto-suave); }
 .briefing__prazo input { accent-color: var(--cor-marca); }
@@ -346,6 +453,29 @@ function editar(numero: number) {
 .briefing__status { margin: 0; padding: 0 1.5rem 1.5rem; color: var(--cor-texto-suave); font-size: .78rem; line-height: 1.5; text-align: right; }
 .briefing__status--sucesso { color: var(--cor-sucesso); }
 .briefing__status--erro { color: #ffc2c2; }
+.briefing-troca-enter-active { transition: opacity 480ms ease, transform 480ms cubic-bezier(.22, 1, .36, 1); }
+.briefing-troca-leave-active { transition: opacity 260ms ease, transform 260ms ease; }
+.briefing-troca-enter-from { opacity: 0; transform: translateY(1rem); }
+.briefing-troca-leave-to { opacity: 0; transform: translateY(-.6rem); }
+.briefing-sucesso { display: grid; min-height: 49rem; place-items: center; overflow: hidden; }
+.briefing-sucesso__conteudo { width: min(100% - 3rem, 31rem); padding-block: 4rem; text-align: center; }
+.briefing-sucesso__sinal { position: relative; width: 8rem; margin-inline: auto; color: var(--cor-marca); }
+.briefing-sucesso__sinal::before, .briefing-sucesso__sinal::after { position: absolute; top: 50%; width: clamp(2rem, 7vw, 5rem); height: 1px; background: linear-gradient(90deg, transparent, var(--cor-marca)); content: ''; opacity: .45; }
+.briefing-sucesso__sinal::before { right: calc(100% + 1rem); }
+.briefing-sucesso__sinal::after { left: calc(100% + 1rem); transform: rotate(180deg); }
+.briefing-sucesso__sinal svg { display: block; width: 100%; overflow: visible; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.briefing-sucesso__orbita, .briefing-sucesso__check { transform-box: fill-box; transform-origin: center; }
+.briefing-sucesso__orbita { stroke: currentColor; stroke-width: 1.5; animation: aparecer-orbita 600ms cubic-bezier(.22, 1, .36, 1) both; }
+.briefing-sucesso__check { stroke: var(--cor-sucesso); stroke-width: 4; animation: aparecer-check 420ms 280ms cubic-bezier(.22, 1, .36, 1) both; }
+.briefing-sucesso__rotulo { margin: 1.75rem 0 1rem; color: var(--cor-marca); font-family: var(--fonte-mono); font-size: .68rem; letter-spacing: .13em; text-transform: uppercase; }
+.briefing-sucesso h3 { max-width: 10ch; margin: 0 auto; font-size: clamp(2.5rem, 5vw, 4.25rem); font-weight: 600; letter-spacing: -.06em; line-height: .95; text-wrap: balance; }
+.briefing-sucesso__conteudo > p:not(.briefing-sucesso__rotulo) { max-width: 30rem; margin: 1.5rem auto 0; color: var(--cor-texto-suave); line-height: 1.65; }
+.briefing-sucesso__tempo { width: min(100%, 18rem); height: 2px; margin: 2.5rem auto 1rem; overflow: hidden; background: rgba(255,255,255,.1); }
+.briefing-sucesso__tempo i { display: block; width: 100%; height: 100%; transform-origin: left; background: var(--cor-marca); animation: tempo-novo-briefing 3s linear both; }
+.briefing-sucesso small { color: var(--cor-texto-discreto); font-family: var(--fonte-mono); font-size: .65rem; letter-spacing: .06em; }
+@keyframes aparecer-orbita { from { opacity: 0; transform: rotate(-20deg) scale(.82); } to { opacity: 1; transform: rotate(0) scale(1); } }
+@keyframes aparecer-check { from { opacity: 0; transform: scale(.55); } to { opacity: 1; transform: scale(1); } }
+@keyframes tempo-novo-briefing { from { transform: scaleX(1); } to { transform: scaleX(0); } }
 @media (max-width: 900px) {
   .contato__grade { grid-template-columns: 1fr; }
   .contato__editorial { position: static; }
@@ -358,5 +488,8 @@ function editar(numero: number) {
   .briefing__acoes { align-items: stretch; }
   .briefing__continuar { max-width: 14rem; }
   .briefing__status { text-align: left; }
+  .briefing-sucesso { min-height: 38rem; }
+  .briefing-sucesso__sinal::before, .briefing-sucesso__sinal::after { width: 2rem; }
+  .briefing-sucesso__tempo { width: min(100%, 12rem); }
 }
 </style>

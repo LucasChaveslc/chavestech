@@ -27,7 +27,7 @@ Nenhuma dessas variáveis deve usar o prefixo `VITE_`. Configure-as no projeto d
 - aceita somente `POST` JSON do mesmo domínio;
 - corpo máximo de 32 KiB;
 - allowlists para tipo, objetivos e fase;
-- nome, e-mail, URL, telefone, data e limites de texto validados no servidor;
+- nome, e-mail, URL, WhatsApp obrigatório, data e limites de texto validados no servidor;
 - saída HTML escapada antes de compor o e-mail;
 - consentimento de contato obrigatório e não pré-marcado;
 - honeypot e tempo mínimo de três segundos;

@@ -46,7 +46,7 @@ Orçamento (opcional, **somente se decidido futuramente**): não coletar na v1.
 
 ### 04 — Contato e revisão
 
-Campos: `Nome` (obrigatório); `E-mail` (obrigatório); `WhatsApp` (opcional, com DDI + máscara acessível); `Empresa ou marca` (opcional).
+Campos: `Nome` (obrigatório); `E-mail` (obrigatório); `WhatsApp` (obrigatório e canal preferencial de retorno, com DDI/DDD); `Empresa ou marca` (opcional).
 
 Resumo editável do que foi respondido; link para voltar a qualquer etapa.
 
@@ -63,6 +63,7 @@ Botão: `Enviar meu projeto`.
 - Backend deve armazenar/transmitir via HTTPS, controlar acessos e evitar registrar dados pessoais em logs desnecessários.
 - Consentimento/privacidade alinhados à LGPD; documentar finalidade, retenção e canal de contato.
 - Ao enviar: loading, prevenção de duplicidade, mensagem de falha recuperável; sucesso só após confirmação real.
+- Após o sucesso confirmado: substituir o formulário por uma confirmação animada, aguardar 3 segundos e restaurar um briefing vazio para novo envio.
 - Nenhum envio a terceiros sem configurar e validar destino; `mailto:` não é equivalente a envio concluído.
 
 ## Modelo de dados ilustrativo
@@ -76,7 +77,7 @@ Botão: `Enviar meu projeto`.
   "prazo": "sem_data",
   "nome": "Pessoa de teste",
   "email": "teste@example.com",
-  "whatsapp": null,
+  "whatsapp": "+55 11 99999-9999",
   "empresa": null,
   "consentimento_contato": true
 }
