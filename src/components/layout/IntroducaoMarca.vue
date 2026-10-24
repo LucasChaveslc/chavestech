@@ -138,6 +138,11 @@ onBeforeUnmount(() => {
           @ended="encerrarIntroducao"
           @error="encerrarIntroducao"
         >
+          <source
+            media="(max-width: 700px)"
+            src="/videos/intro-chavestech-mobile.mp4"
+            type="video/mp4"
+          >
           <source src="/videos/intro-chavestech.mp4" type="video/mp4">
         </video>
 
@@ -223,10 +228,6 @@ onBeforeUnmount(() => {
 .introducao-marca-leave-to { opacity: 0; }
 
 @media (max-width: 700px) {
-  .introducao-marca__video {
-    object-fit: contain;
-    transform: scale(1.8);
-  }
   .introducao-marca__pular {
     right: max(1rem, env(safe-area-inset-right));
     bottom: max(1rem, env(safe-area-inset-bottom));

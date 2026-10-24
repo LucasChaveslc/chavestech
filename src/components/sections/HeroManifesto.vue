@@ -184,16 +184,13 @@ import CabecalhoConceito from '../layout/CabecalhoConceito.vue'
     grid-template-rows: auto;
   }
   .hibrido__grade { grid-template-columns: 1fr; }
-  .hibrido__principal-conteudo { padding-top: 6rem; }
+  .hibrido__principal-conteudo { padding-top: 4rem; }
   .hibrido__principal-conteudo,
   .hibrido__apoio { padding-left: 1.25rem; }
+  .hibrido__apoio { padding-top: 2.25rem; padding-bottom: 2.25rem; }
   .hibrido__principal h1 { font-size: clamp(2.8rem, 12.8vw, 4.75rem); }
   .hibrido__principal h1 span:nth-child(2) { margin-left: 0; }
-  .hibrido__indice { padding-top: 0; }
-  .hibrido__indice {
-    border-top: 1px solid var(--cor-borda);
-    border-left: 0;
-  }
+  .hibrido__indice,
   .hibrido__assinatura { display: none; }
 }
 
